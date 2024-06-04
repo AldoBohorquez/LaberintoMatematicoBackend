@@ -12,7 +12,9 @@ export class RespuestasService {
 
     async getRespuestas() {
         try { 
-            const respuestas = await this.datasource.getRepository(respuestasEntity).find();
+            const respuestas = await this.datasource.getRepository(respuestasEntity).find({relations:['ejercicio']});
+
+            const ejercicios = await this.datasource.getRepository(EjerciciosEntity).findOne({where:{id:respuestas.ejercicios.id}});
             if (!respuestas) {
                 return new HttpException("No se encontraron respuestas",HttpStatus.NOT_FOUND)
             }
