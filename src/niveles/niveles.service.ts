@@ -40,6 +40,22 @@ export class NivelesService {
         }
     }
 
+    async actualizarNivel(id:number,nivelBase: nivelesDto)
+    {
+        try {
+            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{id_niveles:id}});
+
+            if (!nivelFind) {
+                return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
+            }
+
+            return await this.dataSource.getRepository(NivelesEntity).update({id_niveles:nivelFind.id_niveles},nivelBase);
+
+        } catch (error) {
+            throw new HttpException("Error al actualizar el nivel",HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
     async agregarNivel(nivelBase: nivelesDto) 
     {
         try {

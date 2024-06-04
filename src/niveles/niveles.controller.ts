@@ -19,6 +19,12 @@ export class NivelesController {
         return await this.nivelesService.obtenerNivel(id);
     }
 
+    @Put(':id')
+    async actualizarNivel(@Param('id') id:number,@Body() nivelBase:nivelesDto)
+    {
+        return await this.nivelesService.actualizarNivel(id,nivelBase);
+    }
+
     @Post()
     async agregarNivel(@Body() nivelBase:nivelesDto)
     {
