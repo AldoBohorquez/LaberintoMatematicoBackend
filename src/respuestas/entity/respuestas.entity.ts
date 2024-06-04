@@ -9,8 +9,8 @@ export class respuestasEntity {
     @Column({type:'varchar'})
     respuestas: string;
 
-    @Column({type: 'integer'})
-    valor:number;
+    @Column({type: 'boolean', default: 'false'})
+    valor:boolean;
 
     @ManyToOne(()=> EjerciciosEntity, (ejercicios)=>ejercicios.respuesta,{nullable:true})
     ejercicios:EjerciciosEntity;

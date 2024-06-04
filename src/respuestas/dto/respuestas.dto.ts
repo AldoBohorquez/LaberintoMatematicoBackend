@@ -5,7 +5,7 @@ export class respuestasDto{
     @IsString()
     respuestas: string;
     @IsNumber()
-    valor:number;
+    valor:boolean;
     @IsNumber()
     ejercicioId:number;
 }
