@@ -38,11 +38,11 @@ import { RespuestasService } from './respuestas/respuestas.service';
 @Module({
   imports: [TypeOrmModule.forRoot({
     type: "postgres",
-    host: "dpg-cpfpmo0l5elc738hdk0g-a",
+    host: "dpg-cpfrq96ct0pc73d288jg-a",
     port: 5432,
     username: "admin",
-    password: "tKGnrn3Unr4a0A4i67Z2NmVJEtT76xpb",
-    database: "labmat_kzir",
+    password: "kMOyAk8wIGl97ri1ZlCDbPizUROuRjhn",
+    database: "labmat_tuxm",
     synchronize: true,
     logging: true,
     entities: [AlumnosEntity, EjerciciosEntity, GruposEntity, NivelesEntity, ProfesoresEntity, PuntuacionesEntity, SalasEntity,respuestasEntity],
