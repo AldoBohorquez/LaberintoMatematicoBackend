@@ -4,6 +4,9 @@ import { NivelesEntity } from './entity/niveles.entity';
 import { nivelesDto } from './dto/niveles.dto';
 import { EjerciciosEntity } from 'src/ejercicios/entity/ejercicios.entity';
 import { PuntuacionesEntity } from 'src/puntuaciones/entity/puntuaciones.entity';
+import { EjerciciosDto } from 'src/ejercicios/dto/ejercicios.dto';
+import { respuestasDto } from 'src/respuestas/dto/respuestas.dto';
+import { respuestasEntity } from 'src/respuestas/entity/respuestas.entity';
 
 @Injectable()
 export class NivelesService {
@@ -67,6 +70,36 @@ export class NivelesService {
 
         } catch (error) {
             throw new HttpException("Error al agregar el nivel",HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    async crearEjercicioRespuestas(nivelId:number,ejercicio:Array<EjerciciosDto>,respuestas:Array<respuestasDto>)
+    {
+        try {
+            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{id_niveles:nivelId},relations:['ejercicios']});
+
+            if (!nivelFind) {
+                return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
+            }
+
+            for (let i = 0; i < ejercicio.length; i++) {
+                const nuevoEjercicio = await this.dataSource.getRepository(EjerciciosEntity).create(ejercicio[i]);
+                nuevoEjercicio.niveles = nivelFind;
+                const saveEjercicio = await this.dataSource.getRepository(EjerciciosEntity).save(nuevoEjercicio);
+                nivelFind.ejercicios.push(saveEjercicio);
+                for (let j = 0; j < respuestas.length; j++) {
+                    const nuevaRespuesta = await this.dataSource.getRepository(respuestasEntity).create(respuestas[j]);
+                    if(nuevaRespuesta.ejercicios == saveEjercicio)
+                        {
+                            const saveRespuesta = await this.dataSource.getRepository(respuestasEntity).save(nuevaRespuesta);
+                            saveEjercicio.respuesta.push(saveRespuesta);
+                        }
+                }
+            }
+
+            return await this.dataSource.getRepository(NivelesEntity).save(nivelFind);
+        } catch (error) {
+            throw new HttpException("Error al crear el ejercicio",HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
