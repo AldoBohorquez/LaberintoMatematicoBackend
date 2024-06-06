@@ -94,6 +94,22 @@ export class PuntuacionesService {
         }
     }
 
+    async actualizarPuntuacion(id:number,puntuacionBase:puntuacionesDto)
+    {
+        try {
+            const puntuacionFind = await this.dataSource.getRepository(PuntuacionesEntity).findOne({where:{id:id}});
+            if (!puntuacionFind) {
+                return new HttpException("No se encontro la puntuacion",HttpStatus.NOT_FOUND)
+            }
+
+            const updatePuntuacion = await this.dataSource.getRepository(PuntuacionesEntity).update({id:puntuacionFind.id},puntuacionBase);
+
+            return updatePuntuacion.raw;
+        } catch (error) {
+            throw new HttpException("Error al actualizar la puntuacion",HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
     async eliminarPuntuacion(id:number)
     {
         try {

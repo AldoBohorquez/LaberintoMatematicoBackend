@@ -31,6 +31,11 @@ export class PuntuacionesController {
         return this.service.obtenerPuntuacionesAlumnoNivel(bodyPuntuaciones);
     }
 
+    @Put(':id')
+    actualizarPuntuacion(@Param('id') id:number,@Body() puntuacionBase:puntuacionesDto)
+    {
+        return this.service.actualizarPuntuacion(id,puntuacionBase);
+    }
     @Delete(':id')
     eliminarPuntuacion(@Param('id') id:number)
     {
