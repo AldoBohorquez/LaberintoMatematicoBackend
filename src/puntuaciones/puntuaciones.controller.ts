@@ -28,7 +28,7 @@ export class PuntuacionesController {
     @Post('alumnoNivel')
     obtenerPuntuacionesAlumnoNivel(@Body() body:PuntuacionesAluNivel)
     {
-        return this.service.obtenerPuntuacionesAlumnoNivel(body.alumnoId, body.nivelNombre);
+        return this.service.obtenerPuntuacionesAlumnoNivel(body.alumnoId, body.nivelId);
     }
 
     @Put(':id')
@@ -43,7 +43,7 @@ export class PuntuacionesController {
     }
 
     @Get('nivel/:niv')
-    obtenerPuntuacionesPorNivel(@Param('niv') nivel: string) {
+    obtenerPuntuacionesPorNivel(@Param('niv') nivel: number) {
         return this.service.obtenerPuntuacionesPorNivel(nivel);
     }
 

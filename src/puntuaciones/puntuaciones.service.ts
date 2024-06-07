@@ -28,17 +28,22 @@ export class PuntuacionesService {
         }
     }
 
-    async obtenerPuntuacionesAlumnoNivel(idAlumno:number, level:string) {
+    async obtenerPuntuacionesAlumnoNivel(idAlumno:number, level:number) {
         try {
+
+            const findNivel = await this.dataSource.getRepository(NivelesEntity).findOne({ where: { id_niveles:level } });
+            if (!findNivel) {
+                throw new HttpException("No se encontró el nivel", HttpStatus.NOT_FOUND);
+            }
     
-            const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).findOne({
-                where: { alumnos: { id: idAlumno }, nivel: level }
+            const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).find({
+                where: { alumnos: { id: idAlumno }, nivel: findNivel.name }
             });
     
-            if (puntuacionesFind) {
-                return puntuacionesFind;
-            }else{
+            if (puntuacionesFind.length === 0) {
                 return new HttpException("No se encontraron puntuaciones",HttpStatus.NOT_FOUND)
+            }else{
+                return puntuacionesFind;
             }
     
         } catch (error) {
@@ -121,11 +126,17 @@ export class PuntuacionesService {
         }
     }
 
-    async obtenerPuntuacionesPorNivel(nivel: string) {
+    async obtenerPuntuacionesPorNivel(nivel: number) {
         try {
+
+            const findNivel = await this.dataSource.getRepository(NivelesEntity).findOne({ where: { id_niveles:nivel} });
+            if (!findNivel) {
+                throw new HttpException("No se encontró el nivel", HttpStatus.NOT_FOUND);
+            }
+
             const puntuaciones = await this.dataSource.getRepository(PuntuacionesEntity).find({
                 where: {
-                    nivel: nivel
+                    nivel: findNivel.name
                 }
             });
     
