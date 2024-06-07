@@ -32,24 +32,32 @@ export class PuntuacionesService {
         try {
             const findNivel = await this.dataSource.getRepository(NivelesEntity).findOne({ where: { id_niveles: bodyPuntuaciones.nivelId } });
             if (!findNivel) {
-                return new HttpException("No se encontro el nivel", HttpStatus.NOT_FOUND);
+                throw new HttpException("No se encontró el nivel", HttpStatus.NOT_FOUND);
             }
+    
             const findAlumno = await this.dataSource.getRepository(AlumnosEntity).findOne({ where: { id: bodyPuntuaciones.alumnoId } });
             if (!findAlumno) {
-                return new HttpException("No se encontro el alumno", HttpStatus.NOT_FOUND);
+                throw new HttpException("No se encontró el alumno", HttpStatus.NOT_FOUND);
             }
     
-            const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).find({ where: { alumnos: { id: bodyPuntuaciones.alumnoId }, nivel: findNivel.name } });
+            const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).find({
+                where: { alumnos: { id: bodyPuntuaciones.alumnoId }, nivel: findNivel.name }
+            });
     
             if (puntuacionesFind.length === 0) {
-                return { message: "No se encontraron puntuaciones", status: HttpStatus.NOT_FOUND };
+                throw new HttpException("No se encontraron puntuaciones", HttpStatus.NOT_FOUND);
             }
     
             return puntuacionesFind;
         } catch (error) {
-            throw new HttpException("Error al obtener las puntuaciones", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new HttpException("Error al obtener las puntuaciones", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
+    
     
 
     async obtenerPuntuacion(id:number)
