@@ -17,6 +17,11 @@ export class EjerciciosController {
         return this.service.obtenerEjercicio(id);
     }
 
+    @Get('nivelName/:name')
+    obtenerEjerciciosNivel(@Param('name') name: string) {
+        return this.service.obtenerEjerciciosNivel(name);
+    }
+
     @Post()
     agregarEjercicio(@Body() bodyEjercicio:EjerciciosDto) {
         return this.service.agregarEjercicio(bodyEjercicio);

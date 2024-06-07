@@ -24,6 +24,20 @@ export class EjerciciosService {
         }
     }
 
+    async obtenerEjerciciosNivel(name:string)
+    {
+        try {
+            const finNivel = await this.dataSorce.getRepository(NivelesEntity).findOne({where:{name:name}})
+            const ejercicios =await this.dataSorce.getRepository(EjerciciosEntity).find({where:{niveles:finNivel},relations:['niveles','respuesta']})
+            if (!ejercicios) {
+                return new HttpException('No se encontraron ejercicios',HttpStatus.NOT_FOUND)
+            }
+            return ejercicios
+        } catch (error) {
+            throw new HttpException('Error al obtener los ejercicios',HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
     async obtenerEjercicio(id:number)
     {
         try {
