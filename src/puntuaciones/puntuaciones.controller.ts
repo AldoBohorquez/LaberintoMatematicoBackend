@@ -42,8 +42,8 @@ export class PuntuacionesController {
         return this.service.eliminarPuntuacion(id);
     }
 
-    @Get('nivel/:nivel')
-    obtenerPuntuacionesPorNivel(@Param('nivel') nivel: string) {
+    @Get('nivel/:niv')
+    obtenerPuntuacionesPorNivel(@Param('niv') nivel: string) {
         return this.service.obtenerPuntuacionesPorNivel(nivel);
     }
 

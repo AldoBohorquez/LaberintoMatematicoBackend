@@ -126,8 +126,7 @@ export class PuntuacionesService {
             const puntuaciones = await this.dataSource.getRepository(PuntuacionesEntity).find({
                 where: {
                     nivel: nivel
-                },
-                relations: ['alumnos']
+                }
             });
     
             if (!puntuaciones || puntuaciones.length === 0) {
