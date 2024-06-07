@@ -74,6 +74,21 @@ export class NivelesService {
         }
     }
 
+    async findNivelName(name:string)
+    {
+        try {
+            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{name:name}});
+
+            if (!nivelFind) {
+                return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
+            }
+
+            return nivelFind;
+        } catch (error) {
+            throw new HttpException("Error al buscar el nivel",HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
     async crearEjercicioRespuestasInicial()
     {
         try {

@@ -19,6 +19,12 @@ export class NivelesController {
         return await this.nivelesService.obtenerNivel(id);
     }
 
+    @Get('nivelName/:name')
+    async obtenerNivelName(@Param('name') name:string)
+    {
+        return await this.nivelesService.findNivelName(name);
+    }
+
     @Get('crearEjercicios')
     async crearEjercicios()
     {
