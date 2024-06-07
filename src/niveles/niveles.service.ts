@@ -77,7 +77,7 @@ export class NivelesService {
     async findNivelName(name:string)
     {
         try {
-            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{name:name}});
+            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{name:name},relations: ['ejercicios']});
 
             if (!nivelFind) {
                 return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
