@@ -39,7 +39,7 @@ export class PuntuacionesService {
             if (puntuacionesFind) {
                 return puntuacionesFind;
             }else{
-                return new HttpException("No se encontraron puntuaciones",HttpStatus.NOT_FOUND)
+                return new HttpException("No se encontraron puntuaciones",HttpStatus.INTERNAL_SERVER_ERROR)
             }
     
         } catch (error) {
