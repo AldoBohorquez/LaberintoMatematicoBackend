@@ -13,7 +13,7 @@ export class NivelesController {
         return await this.nivelesService.obtenerNiveles();
     }
 
-    @Get(':id')
+    @Get('findOne:id')
     async obtenerNivel(@Param('id') id:number)
     {
         return await this.nivelesService.obtenerNivel(id);
