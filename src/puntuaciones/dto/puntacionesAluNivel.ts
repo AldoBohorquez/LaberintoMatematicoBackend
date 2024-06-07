@@ -1,4 +1,4 @@
 export class PuntuacionesAluNivel {
     alumnoId: number;
-    nivel: string;
+    nivelNombre: string;
 }

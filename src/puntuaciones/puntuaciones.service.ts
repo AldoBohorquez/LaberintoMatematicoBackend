@@ -42,11 +42,7 @@ export class PuntuacionesService {
             }
     
         } catch (error) {
-            if (error instanceof HttpException) {
-                throw error;
-            } else {
-                throw new HttpException("Error al obtener las puntuaciones", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            throw new HttpException("Error al obtener las puntuaciones", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
