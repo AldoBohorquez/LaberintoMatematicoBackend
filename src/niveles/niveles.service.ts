@@ -1,17 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { NivelesEntity } from './entity/niveles.entity';
 import { nivelesDto } from './dto/niveles.dto';
 import { EjerciciosEntity } from 'src/ejercicios/entity/ejercicios.entity';
-import { PuntuacionesEntity } from 'src/puntuaciones/entity/puntuaciones.entity';
-import { EjerciciosDto } from 'src/ejercicios/dto/ejercicios.dto';
-import { respuestasDto } from 'src/respuestas/dto/respuestas.dto';
 import { respuestasEntity } from 'src/respuestas/entity/respuestas.entity';
+import { ejercicio } from './dto/ejerciciosIniciales';
+import { log } from 'console';
 
 @Injectable()
 export class NivelesService {
 
     constructor(private dataSource: DataSource) { }
+    private readonly logger = new Logger(NivelesService.name);
+
 
     async obtenerNiveles()
     {
@@ -73,31 +74,57 @@ export class NivelesService {
         }
     }
 
-    async crearEjercicioRespuestas(nivelId:number,ejercicio:Array<EjerciciosDto>,respuestas:Array<respuestasDto>)
+    async crearEjercicioRespuestasInicial()
     {
         try {
-            const nivelFind = await this.dataSource.getRepository(NivelesEntity).findOne({where:{id_niveles:nivelId},relations:['ejercicios']});
-
-            if (!nivelFind) {
-                return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
-            }
-
-            for (let i = 0; i < ejercicio.length; i++) {
-                const nuevoEjercicio = await this.dataSource.getRepository(EjerciciosEntity).create(ejercicio[i]);
-                nuevoEjercicio.niveles = nivelFind;
+            //Ejercicios iniciales
+            const ejercicios = ejercicio;
+                this.logger.log("Creando ejercicios iniciales");
+            for (let i = 0; i < ejercicios.length; i++) {
+                //Buscamos nivel
+                const findNivel = await this.dataSource.getRepository(NivelesEntity).findOne({where:{id_niveles:ejercicios[i].nivelesId},relations: ['ejercicios']});
+                if (!findNivel) {
+                    return new HttpException("No se encontro el nivel",HttpStatus.NOT_FOUND)
+                }
+                console.log(findNivel);
+                
+                //Creamos la estructura del ejercicio para ejerciciosEntity
+                const structurEjercicio = {
+                    ejercicio: ejercicios[i].ejercicio,
+                    niveles: findNivel
+                }
+                console.log(structurEjercicio);
+                
+                //creamos el cuerpo del ejercicio
+                const nuevoEjercicio = await this.dataSource.getRepository(EjerciciosEntity).create(structurEjercicio);
+                //Guardamos el ejercicio
                 const saveEjercicio = await this.dataSource.getRepository(EjerciciosEntity).save(nuevoEjercicio);
-                nivelFind.ejercicios.push(saveEjercicio);
+
+
+                //Agregamos el ejercicio al nivel
+                findNivel.ejercicios.push(saveEjercicio);
+
+                //Guardamos el nivel
+                await this.dataSource.getRepository(NivelesEntity).save(findNivel);
+
+                //Creamos las respuestas
+                const respuestas = ejercicios[i].respuestas;
+                //Recorremos las respuestas
                 for (let j = 0; j < respuestas.length; j++) {
-                    const nuevaRespuesta = await this.dataSource.getRepository(respuestasEntity).create(respuestas[j]);
-                    if(nuevaRespuesta.ejercicios == saveEjercicio)
-                        {
-                            const saveRespuesta = await this.dataSource.getRepository(respuestasEntity).save(nuevaRespuesta);
-                            saveEjercicio.respuesta.push(saveRespuesta);
-                        }
+                    //Creamos la estructura de las respuestas
+                    const structurRespuesta = {
+                        respuestas: respuestas[j].respuestas,
+                        valor: respuestas[j].valor,
+                        ejercicios: saveEjercicio
+                    }
+                    //Guardamos las respuestas si el ejercicioId es igual al id del ejercicio
+                    if (respuestas[j].ejercicioId === saveEjercicio.id) {
+                        const nuevoRespuesta = await this.dataSource.getRepository(respuestasEntity).create(structurRespuesta);
+                        structurRespuesta.ejercicios = saveEjercicio;
+                        await this.dataSource.getRepository(respuestasEntity).save(nuevoRespuesta);
+                    }
                 }
             }
-
-            return await this.dataSource.getRepository(NivelesEntity).save(nivelFind);
         } catch (error) {
             throw new HttpException("Error al crear el ejercicio",HttpStatus.INTERNAL_SERVER_ERROR)
         }

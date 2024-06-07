@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { NivelesService } from './niveles.service';
 import { nivelesDto } from './dto/niveles.dto';
-import { ejerciciosRespDto } from './dto/ejerciciosResp.dto';
 
 @Controller('niveles')
 export class NivelesController {
@@ -20,10 +19,10 @@ export class NivelesController {
         return await this.nivelesService.obtenerNivel(id);
     }
 
-    @Post('ejercicioRespuesta')
-    async agregarEjercicioRespuesta(@Body() nivelBase:ejerciciosRespDto)
+    @Get('crearEjercicios')
+    async crearEjercicios()
     {
-        return await this.nivelesService.crearEjercicioRespuestas(nivelBase.nivelId,nivelBase.ejercicio,nivelBase.respuestas);
+        return await this.nivelesService.crearEjercicioRespuestasInicial();
     }
 
     @Put(':id')
