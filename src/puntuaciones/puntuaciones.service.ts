@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { PuntuacionesEntity } from './entity/puntuaciones.entity';
 import { puntuacionesDto } from './dto/puntuaciones.dto';
@@ -38,6 +38,8 @@ export class PuntuacionesService {
     
             if (puntuacionesFind) {
                 return puntuacionesFind;
+            }else {
+                throw new NotFoundException('No se encontraron puntuaciones para el alumno y nivel especificados.');
             }
     
         } catch (error) {
