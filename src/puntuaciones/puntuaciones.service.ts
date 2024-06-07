@@ -41,7 +41,9 @@ export class PuntuacionesService {
             }
 
             const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).find({where:{alumnos:{id:bodyPuntuaciones.alumnoId},nivel:findNivel.name}});
-            if (!puntuacionesFind) {
+
+            if(puntuacionesFind.length == 0)
+            {
                 return new HttpException("No se encontraron puntuaciones",HttpStatus.NOT_FOUND)
             }
 
