@@ -121,4 +121,24 @@ export class PuntuacionesService {
         }
     }
 
+    async obtenerPuntuacionesPorNivel(nivel: string) {
+        try {
+            const puntuaciones = await this.dataSource.getRepository(PuntuacionesEntity).find({
+                where: {
+                    nivel: nivel
+                },
+                relations: ['alumnos']
+            });
+    
+            if (!puntuaciones || puntuaciones.length === 0) {
+                return new HttpException("No se encontraron puntuaciones para este nivel", HttpStatus.NOT_FOUND);
+            }
+    
+            return puntuaciones;
+        } catch (error) {
+            throw new HttpException("Error al obtener las puntuaciones por nivel", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+
 }
