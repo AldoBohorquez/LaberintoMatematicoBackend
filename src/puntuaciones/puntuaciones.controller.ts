@@ -13,6 +13,12 @@ export class PuntuacionesController {
         return this.service.obtenerPuntuaciones();
     }
 
+    @Get('alumno/:id')
+    obtenerPuntuacionesAlumno(@Param('id') id:number)
+    {
+        return this.service.obtenerPuntuacionesAlumno(id);
+    }
+
     @Get(':id')
     obtenerPuntuacion(@Param('id') id:number)
     {

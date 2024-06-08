@@ -28,6 +28,19 @@ export class PuntuacionesService {
         }
     }
 
+    async obtenerPuntuacionesAlumno(idAlumno:number)
+    {
+        try {
+            const puntuacionesFind = await this.dataSource.getRepository(PuntuacionesEntity).find({where:{alumnos:{id:idAlumno}},relations:['alumnos']});
+            if (!puntuacionesFind) {
+                return new HttpException("No se encontraron puntuaciones para el alumno",HttpStatus.NOT_FOUND)
+            }
+            return puntuacionesFind;
+        } catch (error) {
+            throw new HttpException("Error al obtener las puntuaciones",HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
     async obtenerPuntuacionesAlumnoNivel(idAlumno:number, level:string) {
         try {
 
