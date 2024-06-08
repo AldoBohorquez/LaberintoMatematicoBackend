@@ -45,15 +45,20 @@ export class GruposService {
                 HttpStatus.NOT_FOUND,
                 );
             }
-
-        const findPuntuaciones = await this.dataSorce.getRepository(PuntuacionesEntity).find({relations:['alumno'],where:{alumnos:{grupos:grupoFind}}})
+            console.log(grupoFind);
+            
+        const puntuaciones = await this.dataSorce.getRepository(PuntuacionesEntity).find();
+        const findPuntuaciones = puntuaciones.filter(puntuacion => puntuacion.alumnos.grupos.id_grupo === grupoFind.id_grupo);
+        console.log(findPuntuaciones);
+        
         if (!findPuntuaciones) {
             return new HttpException(
             'No se encontraron puntuaciones para el grupo',
             HttpStatus.NOT_FOUND,
             );
         }
-        return {grupoFind, puntuaciones: findPuntuaciones};
+        return {grupoFind, puntuaciones: findPuntuaciones}
+        
         } catch (error) {
         throw new HttpException(
             'Error al obtener el grupo',
