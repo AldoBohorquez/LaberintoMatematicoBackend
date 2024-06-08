@@ -5,6 +5,7 @@ import { GruposDto } from './dto/grupos.dto';
 import { ProfesoresEntity } from 'src/profesores/entity/profesores.entity';
 import { SalasEntity } from 'src/salas/entity/salas.entity';
 import { AlumnosEntity } from 'src/alumnos/entity/alumnos.entity';
+import { PuntuacionesEntity } from 'src/puntuaciones/entity/puntuaciones.entity';
 
 @Injectable()
 export class GruposService {
@@ -38,13 +39,21 @@ export class GruposService {
             where: { id_grupo: id },
             relations: ['profesor', 'salas', 'alumnos'],
             });
-        if (!grupoFind) {
+            if (!grupoFind) {
+                return new HttpException(
+                'No se encontro el grupo',
+                HttpStatus.NOT_FOUND,
+                );
+            }
+
+        const findPuntuaciones = await this.dataSorce.getRepository(PuntuacionesEntity).find({relations:['alumno'],where:{alumnos:{grupos:grupoFind}}})
+        if (!findPuntuaciones) {
             return new HttpException(
-            'No se encontro el grupo',
+            'No se encontraron puntuaciones para el grupo',
             HttpStatus.NOT_FOUND,
             );
         }
-        return grupoFind;
+        return {grupoFind, puntuaciones: findPuntuaciones};
         } catch (error) {
         throw new HttpException(
             'Error al obtener el grupo',
