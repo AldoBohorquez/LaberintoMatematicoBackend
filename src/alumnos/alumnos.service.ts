@@ -168,7 +168,7 @@ export class AlumnosService {
                     id: id_Estudiante,
                     grupos: { id_grupo: id_Grupo }
                 },
-                relations: ['grupos'] 
+                relations: ['grupos', 'grupos.salas'] 
             });
     
             if (alumno) {
